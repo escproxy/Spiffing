@@ -12,9 +12,9 @@
  * Take your typical string CSS which you want to be be parsed by
  * Her Majesty the Queen's Spiffing CSS parser:
  *
- * $royalty	= "body {
- *			background-photograph: url('photographs/my_corgies.png');
- *		}";
+ * $royalty	= "body {"
+ *		. "	background-photograph: url('photographs/my_corgies.png');"
+ *		. "}";
  *
  * Class is never to be forgotten when compiling such royal stylesheets, therefore, it is
  * with utter urgence that one begin to compile like so:
@@ -32,7 +32,8 @@
  * @license 	☺ License (http://licence.visualidiot.com)
  *
  */
-	class spiffing {
+	class spiffing
+	{
 		/**
 		 * The dictionary which has been made into a more accessible array.
 		 *
@@ -41,12 +42,12 @@
 		 */
 		public $dictionary 		= array(
 			// Queen's English	// Primitive English from our stateside friends from across the pond.
-			'colour'			=> 'color',
-			'grey'				=> 'gray',
-			'!please'			=> '!important',
+			'colour'		=> 'color',
+			'grey'			=> 'gray',
+			'!please'		=> '!important',
 			'transparency'		=> 'opacity',
-			'centre'			=> 'center',
-			'plump'				=> 'bold',
+			'centre'		=> 'center',
+			'plump'			=> 'bold',
 			'photograph'		=> 'image',
 			'capitalise'		=> 'capitalize'
 		);
@@ -57,7 +58,7 @@
 		 * @var 	boolean
 		 * @access 	public
 		 */
-		public $fail_gracefully	= FALSE;
+		public $fail_gracefully		= FALSE;
 		/**
 		 * Did the operation fail? We shall see.
 		 * This should be set to FALSE by default.
@@ -95,23 +96,31 @@
 		 * @param 	string	Should requesting the class automatically return CSS? Default TRUE;
 		 * @return 	void
 		 */
-		function __construct( $raw = '', $auto_output = true ) {
-			if ( !empty( $raw )) {
+		function __construct( $raw = '', $auto_output = true )
+		{
+			if ( !empty( $raw ))
+			{
 				$this->css = $raw;
-			} else if ( isset( $_SERVER ) ) {
+			}
+			else if ( isset( $_SERVER ) )
+			{
 				// Santise the string.
 				$this->file 	= dirname( __FILE__ )
 						. '/' . str_replace( $this->hook, '',
 						filter_input( INPUT_GET, 'file', FILTER_SANITIZE_STRING ) );
-				if( !file_exists( $this->file ) or !is_readable( $file ) ) {
+				if( !file_exists( $this->file ) or !is_readable( $file ) )
+				{
 					$this->not_found();
 				}
 				$this->css = file_get_contents( $this->file );
-			} else {
+			}
+			else
+			{
 				// No spiffing CSS was found.
 				$this->not_found();
 			}
-			if( $auto_output == true ) {
+			if( $auto_output == true )
+			{
 				$this->process();
 			}
 		}
@@ -122,20 +131,24 @@
 		 * @param	void
 		 * @return 	string
 		 */
-		public function process() {
+		public function process()
+		{
 			// The finished CSS.
-			$processed			= '';
+			$processed		= '';
 			// The array which will hold all found CSS attributes to be repalced.
 			$replacements		= array();
 			// The magic pattern which finds ONLY attributes.
-			$pattern			= '/(?:(?:\s|\t)*|\;)([\w-]*):/i';
+			$pattern		= '/(?:(?:\s|\t)*|\;)([\w-]*):/i';
 			// One should begin by searching the CSS for exlusive Britishness.
 			preg_match_all( $pattern, $this->css, $matches );
-			foreach( $matches[1] as $index => $value ) {
+			foreach( $matches[1] as $index => $value )
+			{
 				// Let's run through the Queen's dictionary for every found term.
-				foreach( $this->dictionary as $british => $primitive ) {
+				foreach( $this->dictionary as $british => $primitive )
+				{
 					// Did we find some Britishness?
-					if( strpos( $value, $british ) !== FALSE ) {
+					if( strpos( $value, $british ) !== FALSE )
+					{
 						// We don't want overlapse - now we do not have an as big foreach to get through.
 						$replacements[$value] = str_ireplace($british, $primitive, $value);
 					}
@@ -157,9 +170,11 @@
 		 * @param	string
 		 * @return 	void
 		 */
-		private function set_header($header) {
+		private function set_header($header)
+		{
 			//  Safely set the header
-			if( !headers_sent() ) {
+			if( !headers_sent() )
+			{
 				header( $header );
 			}
 		}
@@ -170,11 +185,13 @@
 		 * @param	void
 		 * @return 	void
 		 */
-		private function not_found() {
+		private function not_found()
+		{
 			// Since we got called, we failed.
 			$this->we_failed = TRUE;
 			// Let's check if we should do something about that.
-			if ( $this->fail_gracefully == FALSE ) {
+			if ( $this->fail_gracefully == FALSE )
+			{
 				//  Set the header
 				$this->set_header( 'HTTP/1.0 404 Not Found' );
 				//  And stop execution. We don't need no content.
@@ -188,13 +205,15 @@
 		 * @param 	void
 		 * @return 	boolean
 		 */
-		public function did_we_fail() {
+		public function did_we_fail()
+		{
 			return $this->we_failed;
 		}
 		/**
 		 * Deconstructor
 		 */
-		function __deconstruct() {
+		function __deconstruct()
+		{
 			$this->not_found();
 		}
 	}
